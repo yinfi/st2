@@ -23,6 +23,7 @@ from st2common.middleware.instrumentation import RequestInstrumentationMiddlewar
 from st2common.middleware.instrumentation import ResponseInstrumentationMiddleware
 from st2common.router import Router
 from st2common.util.monkey_patch import monkey_patch
+from st2common.util.monkey_patch import use_select_poll_workaround
 from st2common.constants.system import VERSION_STRING
 from st2common.service_setup import setup as common_setup
 from st2common.util import spec_loader
@@ -62,6 +63,10 @@ def setup_app(config={}):
                      service_registry=True,
                      capabilities=capabilities,
                      config_args=config.get('config_args', None))
+
+        # pysaml2 uses subprocess communicate which calls communicate_with_poll
+        if cfg.CONF.auth.sso and cfg.CONF.auth.sso_backend == 'saml2':
+            use_select_poll_workaround(nose_only=False)
 
     # Additional pre-run time checks
     validate_auth_backend_is_correctly_configured()
