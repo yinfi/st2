@@ -97,6 +97,7 @@ cache:
 before_install:
   - pip install --upgrade "pip>=19.0,<20.0"
   - sudo pip install --upgrade "virtualenv==16.6.0"
+  - sudo pip install --upgrade invoke
 
 install:
   - ./scripts/travis/install-requirements.sh
